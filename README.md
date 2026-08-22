@@ -7,7 +7,6 @@ Zynost Pay is the merchant-facing product layer of the Zynost payment stack. It 
 **Live:** https://pay.zynost.com  
 **Primary BNB experience:** BSC stablecoin checkout + ERC-4337 gas sponsorship  
 **Custody model:** merchant-controlled settlement  
-**Developer API:** https://api.zynost.com
 
 ---
 
