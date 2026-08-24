@@ -19,6 +19,8 @@ jobs:
           node-version: "22"
       - name: Install dependencies
         run: npm install
+      - name: Runtime dependency audit
+        run: npm audit --omit=dev --audit-level=high
       - name: Public repository guard
         run: node scripts/check-public-repo.mjs
       - name: TypeScript production-core compile
