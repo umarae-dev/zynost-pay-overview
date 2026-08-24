@@ -1,39 +1,19 @@
 {
-  "name": "zynost-pay",
-  "version": "0.1.0",
+  "name": "zynost-pay-client-core",
+  "version": "1.0.0",
   "private": true,
+  "description": "Production-derived Zynost Pay browser wallet and gasless signing core",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "check:public": "node scripts/check-public-repo.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.8",
-    "@react-three/fiber": "^9.7.0",
     "@walletconnect/ethereum-provider": "^2.23.10",
     "buffer": "^6.0.3",
-    "clsx": "^2.1.1",
-    "ethers": "^6.13.4",
-    "firebase": "^12.17.1",
-    "framer-motion": "^12.43.0",
-    "lucide-react": "^1.27.0",
-    "next": "16.2.12",
-    "ogl": "^1.0.11",
-    "react": "19.2.4",
-    "react-dom": "19.2.4",
-    "react-qr-code": "^2.2.0",
-    "tailwind-merge": "^3.6.0",
-    "three": "^0.185.1"
+    "ethers": "^6.13.4"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.12",
-    "tailwindcss": "^4",
     "typescript": "^5"
   }
 }
