@@ -31,6 +31,10 @@ export const WALLETCONNECT_WALLET_ID = "walletconnect";
 export const WALLETCONNECT_METAMASK_ID = "metamask";
 export const WALLETCONNECT_TRUSTWALLET_ID = "trustwallet";
 
+// A public dapp identifier, not a secret (same category as the Firebase
+// web API keys elsewhere in this repo) — free at cloud.reown.com. Empty =
+// the WalletConnect-backed options are hidden from the picker entirely,
+// same graceful-degradation convention as every other optional integration.
 const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "";
 
 export function isWalletConnectConfigured(): boolean {
@@ -48,6 +52,8 @@ function _wcMetadata() {
 
 let _wcProviderPromise: ReturnType<typeof EthereumProvider.init> | null = null;
 
+// showQrModal:true - the official WalletConnect modal, used only for the
+// generic "Other wallets" catch-all entry.
 function _getWcProvider() {
   if (!_wcProviderPromise) {
     _wcProviderPromise = EthereumProvider.init({
@@ -63,6 +69,10 @@ function _getWcProvider() {
 
 let _wcNoModalProviderPromise: ReturnType<typeof EthereumProvider.init> | null = null;
 
+// showQrModal:false - a separate provider instance driven via the
+// display_uri event, used for the dedicated MetaMask/Trust Wallet picker
+// entries: one tap deep-links straight into that one wallet app instead of
+// showing WalletConnect's own generic "pick a wallet" modal on top of ours.
 function _getWcProviderNoModal() {
   if (!_wcNoModalProviderPromise) {
     _wcNoModalProviderPromise = EthereumProvider.init({
@@ -123,6 +133,9 @@ function _startDiscovery() {
   window.dispatchEvent(new Event("eip6963:requestProvider"));
 }
 
+// Call once on module load in the browser — mirrors wallet_bridge.js
+// dispatching eip6963:requestProvider immediately so wallets that already
+// loaded before this ran still get picked up.
 if (typeof window !== "undefined") _startDiscovery();
 
 function _hasByNameSubstring(list: DiscoveredWallet[], needle: string): boolean {
@@ -138,6 +151,11 @@ export function listEvmWallets(): DiscoveredWallet[] {
   const real = discovered.length === 0 && typeof window !== "undefined" && (window as unknown as { ethereum?: unknown }).ethereum
     ? [{ id: "legacy-window-ethereum", name: "Browser Wallet", icon: "" }]
     : discovered;
+  // MetaMask/Trust Wallet get their own dedicated one-tap entries with a
+  // real logo (deep-link straight into that wallet app via WalletConnect)
+  // - only added when not already found via a real extension/EIP-6963
+  // announcement, so an installed extension always wins. "Other wallets"
+  // stays as the WalletConnect-modal catch-all for everything else.
   if (isWalletConnectConfigured()) {
     if (!_hasByNameSubstring(real, "metamask")) real.push({ id: WALLETCONNECT_METAMASK_ID, name: "MetaMask", icon: "" });
     if (!_hasByNameSubstring(real, "trust")) real.push({ id: WALLETCONNECT_TRUSTWALLET_ID, name: "Trust Wallet", icon: "" });
@@ -159,6 +177,8 @@ export async function connectEvm(walletId?: string): Promise<string> {
   }
   if (walletId === WALLETCONNECT_WALLET_ID) {
     const provider = await _getWcProvider();
+    // A previous session on this device may already be approved - skip
+    // re-showing the QR modal in that case, same as any other WC dapp.
     if (!provider.session) await provider.connect();
     _activeProvider = provider as unknown as Eip1193Provider;
     const address = provider.accounts?.[0];
@@ -179,6 +199,10 @@ export async function connectEvm(walletId?: string): Promise<string> {
   return accounts[0];
 }
 
+// amountRaw is a decimal-string integer already scaled by the token's
+// decimals (e.g. "3000000" for 3.00 USDT at 6 decimals) — computed by the
+// caller via amountRaw() below, never as a float, to avoid rounding a real
+// payment amount.
 export async function sendErc20(
   fromAddress: string,
   contractAddress: string,
@@ -205,6 +229,12 @@ export async function sendErc20(
   })) as string;
 }
 
+// Converts a USD amount (always exactly 2 decimal places — see
+// merchant_service.PRO_MONTHLY_PRICE_USD / fee_owed_usd) to the raw integer
+// string a stablecoin transfer needs, via cents first so this is exact
+// integer math, never float rounding on a real payment amount. decimals
+// must come from wallet_connect_meta (BSC's USDT/USDC use 18, not the 6
+// every other chain here uses).
 export function amountRaw(amountUsd: number, decimals: number): string {
   const cents = Math.round(amountUsd * 100);
   return (BigInt(cents) * BigInt(10) ** BigInt(decimals - 2)).toString();
@@ -215,6 +245,9 @@ export function isMobileBrowser(): boolean {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
+// Deep-links that reopen the CURRENT page inside a wallet app's own
+// built-in browser, where window.ethereum becomes available — the site
+// then runs the exact same EIP-6963 flow above, just inside that webview.
 export function walletDeepLinks(currentUrl: string): { name: string; url: string }[] {
   const bare = currentUrl.replace(/^https?:\/\//, "");
   return [
