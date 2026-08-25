@@ -1,0 +1,9 @@
+# Public mirror ownership
+* @umarae-dev
+
+# Production-derived client-core files require owner review
+/lib/ @umarae-dev
+/PROVENANCE.md @umarae-dev
+/PUBLIC_PRIVATE_BOUNDARY.md @umarae-dev
+/SECURITY.md @umarae-dev
+/scripts/check-public-repo.mjs @umarae-dev
