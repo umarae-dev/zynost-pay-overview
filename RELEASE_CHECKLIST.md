@@ -1,6 +1,6 @@
 # Release checklist
 
-A public release or hackathon submission is complete only when all of the following are true:
+A public release or external technical review is complete only when all of the following are true:
 
 ## Production lineage
 
@@ -25,7 +25,7 @@ A public release or hackathon submission is complete only when all of the follow
 - [ ] `npm run typecheck` passes.
 - [ ] GitHub Actions shows a green CI run for the exact final public commit.
 
-## Judge / reviewer readiness
+## Reviewer readiness
 
 - [ ] README accurately describes what is executable and what remains private.
 - [ ] `ARCHITECTURE.md` accurately describes the BNB Chain path and trust boundary without exposing sensitive internals.
