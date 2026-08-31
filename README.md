@@ -5,7 +5,7 @@
 
 > Non-custodial stablecoin checkout client code for wallet connection, ERC-20 transfer construction and gasless smart-account signing.
 
-Zynost Pay is the merchant-facing payment product in the Zynost stack. This public repository contains a **real production-derived browser client core**, not only an architecture overview.
+Zynost Pay is the merchant-facing payment product in the Zynost stack. This public repository contains a **production-derived browser client core**, not only an architecture overview.
 
 **Live product:** https://pay.zynost.com  
 **Primary BNB experience:** BSC stablecoin checkout + ERC-4337 gas sponsorship  
@@ -17,9 +17,9 @@ Zynost Pay is the merchant-facing payment product in the Zynost stack. This publ
 
 ## Why this repository exists
 
-The complete production merchant application remains private because it contains authenticated product surfaces and operational integrations that should not be exposed merely to prove that the system is real. This repository instead publishes the independently reviewable browser execution core used for wallet connection, stablecoin transfer construction and gasless signing.
+The complete production merchant application remains private because it contains authenticated product surfaces and operational integrations that should not be exposed merely to demonstrate production lineage. This repository instead publishes the independently reviewable browser execution core used for wallet connection, stablecoin transfer construction and gasless signing.
 
-The goal is to give reviewers and hackathon judges executable, auditable source without exposing credentials, customer data, private infrastructure, live operational controls or commercial implementation details that could weaken the production service.
+The goal is to give reviewers executable, auditable source without exposing credentials, customer data, private infrastructure, live operational controls or commercial implementation details that could weaken the production service.
 
 ## What is open here
 
@@ -102,7 +102,7 @@ npm run typecheck
 
 `NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID` is optional. Copy `.env.example` to your local environment and use your own public Reown project ID if you want WalletConnect-backed options enabled.
 
-## Judge / reviewer verification
+## Reviewer verification
 
 A reviewer can validate the public release without access to any private credential:
 
@@ -113,7 +113,7 @@ A reviewer can validate the public release without access to any private credent
 5. inspect `scripts/check-public-repo.mjs` and the PR checklist for anti-leak controls;
 6. review `lib/walletBridge.ts` and `lib/gaslessBilling.ts` as the executable production-derived client core.
 
-The public repository is designed to be judgeable on its own while the private production product remains protected.
+The public repository is designed to be reviewable on its own while the private production product remains protected.
 
 ## Repository safety controls
 
@@ -132,8 +132,9 @@ These controls reduce accidental disclosure risk but do not replace human review
 - [Zynost Paymaster](https://github.com/umarae-dev/zynost-paymaster-overview) — ERC-4337 sponsorship and on-chain safety controls.
 - [UQX BNB contracts](https://github.com/umarae-dev/uqx-bnb-contracts-overview) — BNB-native UQX token, presale and vesting contracts.
 - [Zynost Public Intelligence Reference](https://github.com/umarae-dev/tradeos-backend-overview) — executable public reference for Zynost decision intelligence.
+- [UQX Android App Overview](https://github.com/umarae-dev/uqx-app-overview) — self-custody Web3 wallet and device-security architecture.
 
-Together these repositories expose reviewable BNB/Zynost building blocks while keeping production credentials, private data and sensitive operational logic outside public source control.
+Together these repositories expose inspectable BNB/Zynost building blocks while keeping production credentials, private data and sensitive operational logic outside public source control.
 
 ## Technology
 
